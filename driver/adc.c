@@ -106,7 +106,11 @@ void ADC_ISR (void) __interrupt AD0INT_VECTOR __using 2
 
   /* Set up channel for next measurement */
   AMX0SL = adc[adc_chan].channel;
+#if BUILD_TARGET == IET912X
+  AD0INT = 0;
+#else
   ADCINT = 0;
+#endif
 }
 
 /*
@@ -164,14 +168,25 @@ int get_temperature(u8_t channel)
  */
 void Timer3_Init (int counts)
 {
+  unsigned char store = SFRPAGE;    /* Save the SFR register */
+#if BUILD_TARGET == IET912X
+  SFRPAGE = TMR3_PAGE;
+#endif
   /* Set timer 3 control register, disabled, use sysclk / 12 */
   TMR3CN = 0x00;
 
+#if BUILD_TARGET == IET912X
+  RCAP3L  = (-(counts) & 0x00ff);	      // Timer 3 Reload Register Low Byte
+  RCAP3H  = (-(counts) >> 8);	          // Timer 3 Reload Register High Byte
+#else
   TMR3RLL = (-(counts) & 0x00ff);	      // Timer 3 Reload Register Low Byte
   TMR3RLH = (-(counts) >> 8);	          // Timer 3 Reload Register High Byte
+#endif
   /* Make sure timer is reloaded immediatly */
   TMR3L = 0xff;
   TMR3H = 0xff;
+
+  SFRPAGE = store;
   /* return without enabling the timer, let the adc setup do that */
 }
 
@@ -195,11 +210,14 @@ void adc_init(void)
   ADC0CF = 0xF8 | 0x00;
   REF0CN = 0x03;
   /* Initilize sample rate counter 1500 Hz sample rate*/
-  Timer3_Init(1111);
+  Timer3_Init(SYSCLK / 12 / 1500);
   /* Enable ADC interrupts */
   ADC_INT_ON();
   /* Start the timer */
-  TMR3CN |= 4;
+#if BUILD_TARGET == IET912X
+  SFRPAGE   = TMR3_PAGE;
+#endif
+  TMR3CN    = 0x04;
 }
 
 

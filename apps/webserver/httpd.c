@@ -54,7 +54,7 @@
  *
  * $Id: httpd.c,v 1.2 2006/06/11 21:46:38 adam Exp $
  */
-
+#pragma codeseg UIP_BANK
 //#define PRINT_A
 
 #include "uip.h"

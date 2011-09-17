@@ -54,14 +54,14 @@
 #define IET902X   1   // IP Avenger
 #define IET912X   2   // IP Avenger II
 // Change below to alter target system
-#define BUILD_TARGET  IET902X
+#define BUILD_TARGET  IET912X
 
 /*
  * The IP Avenger targets can use both the internal oscillator and the
  * external 20MHz clock signal fed from the ethernet controller.
  * Make sure you set USE_EXTERNAL_CLOCK to use the external 20 MHz oscillator.
  */
-#define USE_EXTERNAL_CLOCK
+ /* #define USE_EXTERNAL_CLOCK */
 
 /*
  * The webserver can be configured to support simple authentication. This
@@ -95,7 +95,12 @@
 #define banked
 #endif
 
+#ifdef USE_EXTERNAL_CLOCK
 #define   SYSCLK          20000000
+#else
+/* Important, remember to set the correct sysclk for you target system */
+#define   SYSCLK          24500000
+#endif
 
 #define   UIP_ARP_TIMER   1000    // Gives 0,01 * 1000 = 10 sec interval
 #define   UIP_TX_TIMER    50      // Gives 0,01 * 50 = 0,5 sec interval

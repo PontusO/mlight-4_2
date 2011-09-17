@@ -201,6 +201,8 @@ VERSION HISTORY:
 #include <stdio.h>
 #include <stdlib.h>
 
+#pragma codeseg UIP_BANK
+
 #ifdef ENABLE_BASE64_ENCODE
 /*
 ** Translation Table as described in RFC1113

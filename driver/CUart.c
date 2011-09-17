@@ -111,12 +111,16 @@ void putchar(char a)
  *
  * Function: CUart1_init(void)
  *
- * Initializes UART1 to do 9600 baud, currently this code only works for C8051F02X
- * series microcontrollers.
+ * Initializes UART1 to do 9600 baud, The first section code only works for C8051F02X
+ * and uses Timer 4 as a baudrate generator.
+ *
+ * The second section of the code is for C8051F12x and uses timer1 as a baudrate
+ * generator. It assumes an operating frequency (SYSCLK) of 24.5 MHz.
  *
  *********************************************************************************/
 void UART1_init(void) __reentrant
 {
+#if BUILD_TARGET == IET902X
   /* Mode 1, Check Stop Bit */
   SCON1  =  0x50;
 
@@ -134,8 +138,21 @@ void UART1_init(void) __reentrant
 
   tx_busy = 0;
   cnt = 0;
-  RX_sonar = 0;
-  memset(sonar_str, 0, 6);
+#else
+  /* Setup UART1 as an 8 bit UART */
+  SFRPAGE   = UART1_PAGE;
+  SCON1     = 0x50;
+  TI1       = 1;
+
+  /* Setup timer one to do 115200 baud */
+  SFRPAGE   = TIMER01_PAGE;
+  TMOD      = 0x20;
+  CKCON     = 0x10;
+  TH1       = 0x96;
+  TR1       = 1;
+
+  /* Set interrupts below this point */
+#endif
 }
 
 /*********************************************************************************
@@ -143,6 +160,8 @@ void UART1_init(void) __reentrant
  * Function: UART1_ISR
  *
  * UART1 interrupt handler
+ *
+ * FIXME: Rewrite to a more generic ISR
  *
  *********************************************************************************/
 void UART1_ISR (void) __interrupt UART1_VECTOR
