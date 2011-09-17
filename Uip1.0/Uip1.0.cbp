@@ -37,6 +37,7 @@
 		<ExtraCommands>
 			<Add before="perl ..\apps\webserver\makefsdata" />
 			<Add before="perl ..\apps\smtp\makestrings" />
+			<Add after="bin\debug\flash_serial.bat" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="..\applications\adc_mon.c">
