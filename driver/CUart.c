@@ -53,7 +53,7 @@
 #include "uip.h"
 #include "CUart.h"
 
-const u8_t  baudrates[] = {0xf5};
+const u8_t  baudrates[] = {0xf3};
 static char tx_busy; /* TX Busy flag */
 static char cnt;
 char sonar_str[6];

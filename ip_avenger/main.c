@@ -50,7 +50,7 @@
  */
 
 //#define PRINT_A
-//#define PRINT_B
+#define PRINT_B
 
 #include "system.h"       // System description
 #include "main.h"         // Locals

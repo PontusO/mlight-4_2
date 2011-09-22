@@ -61,7 +61,10 @@
  * external 20MHz clock signal fed from the ethernet controller.
  * Make sure you set USE_EXTERNAL_CLOCK to use the external 20 MHz oscillator.
  */
- /* #define USE_EXTERNAL_CLOCK */
+#undef USE_EXTERNAL_CLOCK
+
+/* To enable the system watchdog the following macro need to be  */
+#undef  ENABLE_SYSTEM_WATCHDOG
 
 /*
  * The webserver can be configured to support simple authentication. This
@@ -117,8 +120,12 @@
 #define OFF                   0
 #define ON                    1
 
+#ifdef ENABLE_SYSTEM_WATCHDOG
 #define WDT_RST               0xA5
-#define RESET_WDT(x)          WDTCN = x;
+#define RESET_WDT(x)          WDTCN = x
+#else
+#define RESET_WDT(x)
+#endif
 
 extern struct sys_config sys_cfg;
 extern const struct sys_config default_cfg;

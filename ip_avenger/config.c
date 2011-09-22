@@ -49,14 +49,16 @@ void config() {
   else if (t & 0x08)
     wdt_resets++;
 
-// disable watchdog timer, needs to be done early
-//  WDTCN = 0x07;	          // Watchdog Timer Control Register
-//  WDTCN = 0xDE;           // Disable WDT
-//  WDTCN = 0xAD;
-
+#ifdef ENABLE_SYSTEM_WATCHDOG
   /* Enable watch dog and lock it */
   WDTCN     = 0xFF;
   WDTCN     = 0x07;
+#else
+  /* disable watchdog timer, needs to be done early */
+  WDTCN = 0x07;	          // Watchdog Timer Control Register
+  WDTCN = 0xDE;           // Disable WDT
+  WDTCN = 0xAD;
+#endif
 
 #if BUILD_TARGET == IET912X
   SFRPAGE = CONFIG_PAGE;
